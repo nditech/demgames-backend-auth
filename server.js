@@ -3,17 +3,6 @@ const app2 = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const moment = require('moment');
-//const momentTimezone = require('moment-timezone');
-//const { randomBytes } = require('crypto');
-//import bodyParser from 'body-parser';
-//import cors from 'cors';
-//import moment from 'moment';
-//import momentTimezone from 'moment-timezone';
-//import { randomBytes } from 'crypto';
-
-//const express = require('express');
-//const routers = require('./routers/routers')
-//const pool = require('./db/config');
 
 const mysql = require('mysql');
 
@@ -66,7 +55,8 @@ const connectionMysql =mysql.createConnection({
             console.log("Message from MySQL Server : " + result.message);               
       }); 
   })
-  
+
+ 
   
   //Post player updates on mysql db
   app2.post('/updateplayer', (req, res) => {
@@ -126,6 +116,20 @@ const connectionMysql =mysql.createConnection({
         }    
     }) 
   })
+   //Get players from mysql db
+   app2.get('/profile',(req,res)=>{
+        const snd=req.query;
+
+        connectionMysql.query("Select * from plays inner Join players on plays.player_id= players.id where players.email='"+snd.email+"'", (err, data, fields)=>{
+        
+        if(err){ 
+            console.log("Not Successful access");
+        }else{
+            console.log(JSON.stringify(data));
+            res.send(JSON.stringify(data));
+        }    
+        }) 
+    })
   
   //Get specific player profile from mysql db
   app2.get('/selectPlayerProfile',(req,res)=>{
@@ -278,8 +282,9 @@ const connectionMysql =mysql.createConnection({
     const id=Math.random()*100+100;
     data.id=id;
     console.log(data);
-    const sqlInsertStatement='insert into games (id, caption, gamedescription, gametype) values(?,?,?,?)';
-    connectionMysql.query(sqlInsertStatement, [id, 'NodeName','NodeMiddle','NodeLast'], function (err, result, fields) {
+    
+    const sqlInsertStatement='insert into games SET ?';
+    connectionMysql.query(sqlInsertStatement, [data], function (err, result, fields) {
           if (err) throw err;
           console.log(data);               
           console.log("Number of rows affected : " + result.affectedRows);

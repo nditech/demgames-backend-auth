@@ -9,109 +9,66 @@ class UpdatePlayer2 extends Component {
   
     constructor(props){
         super(props);
+
         this.state={
-            user:[{
-                id:"",
-                firstName:"",
-                middleName:"",
-                lastName:"",
-                userName:"",
-                email:"",
-                dateOfBirth:new Date(),
-                gender:"",
-                country:"",
-                city:"",
-                program:""
-            }],
-            updateUser:{
-                id:null,
-                firstName:null,
-                middleName:null,
-                lastName:null,
-                userName:null,
-                email:"",
-                dateOfBirth:new Date(),
-                gender:null,
-                country:null,
-                city:null,
-                program:null
-            },
-            useridI:null         
-        }
+                current:0,
+                score:0,
+                play_id:null,
+                player_id:null,
+                game_id:null,
+                email:this.props.email,
+                player_id:null,
+                firstname:this.props.given_name,
+                family_name:this.props.family_name,
+                username:this.props.username,
+                picture:this.props.picture,
+                gender:this.props.gender,
+                total:0,
+                program_rank:null,
+                total_rank:null,
+                useridI:null 
+            }                    
+
         this.handleSearch=this.handleSearch.bind(this);
-        this.pool=this.pool.bind(this);
-        this.handleDate = this.handleDate.bind(this);
+       
+       // this.handleDate = this.handleDate.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit  = this.handleSubmit.bind(this);
         this.handleChangeS = this.handleChangeS.bind(this);      
     }
 
-    componentDidMount() {
-        this.pool();        
-     }
+   
 
     handleSearch(event){
-        event.preventDefault();   
-        console.log("The value being searched is :" + this.state.useridI);
-        this.state.user.map(
-            (element) => {
-                console.log("The value being searched is :" + this.state.useridI+" "+element.id);
-                if(element.id===this.state.useridI) {
-                           
-                     this.setState(
-                    {
-                        updateUser: element},
-                             ()=>{
-                                   console.log(this.state.updateUser.id+"    "+this.state.useridI+"  "+element.id);                                   
-                                 }
-                    )                  
-                }
-                else
-                 console.log("Value not found");
+        alert(this.props.email);
+
+        if(this.state.email!==null)
+        {        
+            const encodedValue1 = encodeURIComponent(this.props.email);  
+           
+            fetch(`http://localhost:3001/selectPlayerProfile?email=${encodedValue1}`, {
+            method: 'get',        
+            headers: {
+            "Content-Type": "Application/json",
+            "Accept":"application/json"
             }
-        );
-        console.log(this.state.updateUser.id)  
-    }
+        })
+        .then((res) => res.json())      
+        .then((data)=>{
+            console.log(data);
+            this.setState({                             
+                player_id:data[0].player_id,
+                given_name:data[0].given_name,
+                family_name:data[0].family_name,
+                username:data[0].username,
+                gender:this.props.gender
 
-    pool(){
-        const url ="http://localhost:3001/users";
-       // const url ="http://localhost:3001/users"
-        fetch(url)
-        .then((res) =>res.json())
-        .then((data)=>{                        
-               const Str2=JSON.stringify(JSON.parse(JSON.stringify(data)));
-               const bObj2=JSON.parse(Str2);
-               const newUSER=JSON.parse(JSON.stringify(bObj2)); 
-               console.log(newUSER);                             
-               this.setState(prevState=>({
-                      user:prevState.user.concat(newUSER)
-               }))
-               console.log(JSON.stringify(JSON.parse(JSON.stringify(this.state.user))));                 
-        });        
-        console.log(this.state.user);
-    }
-
-    handleDate(date){       
-        this.setState(prevState=>({
-                updateUser:{
-                    dateOfBirth:date,
-                    firstName:prevState.updateUser.firstName,
-                    id:prevState.updateUser.id,
-                    middleName:prevState.updateUser.middleName, 
-                    lastName:prevState.updateUser.lastName,
-                    userName:prevState.updateUser.userName,
-                    email:prevState.updateUser.email,
-                    gender:prevState.updateUser.gender,
-                    country:prevState.updateUser.country,
-                    city:prevState.updateUser.city,
-                    program:prevState.updateUser.program
-                }
-        }),
-        ()=>{
-            console.log(this.state.updateUser.dateOfBirth);
+            });
+        })
+        .catch((error)=>console.log(error))  
         }
-        )
     }
+
 
     handleChange(event) { 
         event.preventDefault();
@@ -119,270 +76,21 @@ class UpdatePlayer2 extends Component {
         switch(event.target.name){
             case "userid":
             {
+                var val=event.target.value;  
                 this.setState({
-                    updateUser:{
-                        id:event.target.value
-                    }},
-                    ()=>{
-                        console.log("value"+this.state.updateUser.id)
-                    }
-                );
+                    player_id:val
+                 } );
                 break;
             }
             case "firstName":
             {   
                 var firstName=event.target.value;    
-                this.setState(prevState => ({
-                    updateUser:{
-                        firstName:firstName,
-                        id:prevState.updateUser.id,
-                        middleName:prevState.updateUser.middleName, 
-                        lastName:prevState.updateUser.lastName,
-                        userName:prevState.updateUser.userName,
-                        email:prevState.updateUser.email,
-                        gender:prevState.updateUser.gender,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        country:prevState.updateUser.country,
-                        city:prevState.updateUser.city,
-                        program:prevState.updateUser.program
-                    }}),
-                    ()=>{
-                        console.log("New Value :"+this.state.updateUser.firstName)
-                    }
+                this.setState({
+                    firstname:firstName
+                }
                 );
                 break;
-            }
-            case "middleName":
-            {   
-                var middleName=event.target.value;    
-                this.setState(prevState => ({
-                    updateUser:{
-                        middleName:middleName,
-                        id:prevState.updateUser.id,
-                        firstName:prevState.updateUser.firstName, 
-                        lastName:prevState.updateUser.lastName,
-                        userName:prevState.updateUser.userName,
-                        email:prevState.updateUser.email,
-                        gender:prevState.updateUser.gender,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        country:prevState.updateUser.country,
-                        city:prevState.updateUser.city,
-                        program:prevState.updateUser.program
-                    }}),
-                    ()=>{
-                        console.log("New Value :"+this.state.updateUser.middleName)
-                    }
-                );
-                break;
-            }
-            case "lastName":
-            {   
-                var lastName=event.target.value;    
-                this.setState(prevState => ({
-                    updateUser:{
-                        lastName:lastName,
-                        id:prevState.updateUser.id,
-                        middleName:prevState.updateUser.middleName, 
-                        firstName:prevState.updateUser.firstName,
-                        userName:prevState.updateUser.userName,
-                        email:prevState.updateUser.email,
-                        gender:prevState.updateUser.gender,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        country:prevState.updateUser.country,
-                        city:prevState.updateUser.city,
-                        program:prevState.updateUser.program
-                    }}),
-                    ()=>{
-                        console.log("New Value :"+this.state.updateUser.lastName)
-                    }
-                );
-                break;
-            }
-            case "userName":
-            {   
-                var userName=event.target.value;    
-                this.setState(prevState => ({
-                    updateUser:{
-                        userName:userName,
-                        id:prevState.updateUser.id,
-                        middleName:prevState.updateUser.middleName, 
-                        firstName:prevState.updateUser.firstName,
-                        lastName:prevState.updateUser.lastName,
-                        email:prevState.updateUser.email,
-                        gender:prevState.updateUser.gender,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        country:prevState.updateUser.country,
-                        city:prevState.updateUser.city,
-                        program:prevState.updateUser.program
-                    }}),
-                    ()=>{
-                        console.log("New Value :"+this.state.updateUser.userName)
-                    }
-                );
-                break;
-            }
-            case "email":
-            {
-                var email=event.target.value;
-                this.setState(prevState => ({
-                    updateUser:{
-                        email:email,
-                        id:prevState.updateUser.id,
-                        firstName:prevState.updateUser.firstName, 
-                        middleName:prevState.updateUser.middleName, 
-                        lastName:prevState.updateUser.lastName,
-                        userName:prevState.updateUser.userName,
-                        gender:prevState.updateUser.gender,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        country:prevState.updateUser.country,
-                        city:prevState.updateUser.city,
-                        program:prevState.updateUser.program
-                    }}),
-                    ()=>{
-                            console.log("New Value :"+this.state.updateUser.email)
-                        }
-                );
-                break;                
-            }
-            case "gender":
-            {
-                var gender=event.target.value;           
-                this.setState(prevState => ({
-                    updateUser:{
-                        gender:gender,
-                        id:prevState.updateUser.id,
-                        firstName:prevState.updateUser.firstName, 
-                        middleName:prevState.updateUser.middleName, 
-                        lastName:prevState.updateUser.lastName,
-                        userName:prevState.updateUser.userName,
-                        email:prevState.updateUser.email,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        country:prevState.updateUser.country,
-                        city:prevState.updateUser.city,
-                        program:prevState.updateUser.program
-                    }}),
-                    ()=>{
-                            console.log('New Value :' +this.state.updateUser.gender);
-                            var genderRadio=this.refs.gender;
-
-                            if (gender==='Male')
-                            {  
-                                 genderRadio.nodeValue='Male';
-                                console.log("Gender"+genderRadio.nodeValue+genderRadio.checked);                             
-                                genderRadio.checked=true;
-                                console.log("Gender"+genderRadio.nodeValue+genderRadio.checked);
-                            }
-                            else if (gender==='Female')
-                            {   genderRadio.nodeValue='Female';
-                                console.log("Gender"+genderRadio.nodeValue+genderRadio.checked);                             
-                                genderRadio.checked=true;
-                                console.log("Gender"+genderRadio.nodeValue+genderRadio.checked);
-                            }
-                            else
-                            {   genderRadio.nodeValue='Other';
-                                console.log("Gender"+genderRadio.nodeValue+genderRadio.checked);                             
-                                genderRadio.checked=true;
-                                console.log("Gender"+genderRadio.nodeValue+genderRadio.checked);                               
-                            }
-
-                        }
-                );
-                break;                
-            }
-            case "country":
-            {
-                var country=event.target.value;
-                var countryInput=document.getElementsByName('country');
-                countryInput.select=country;                    
-                this.setState(prevState => ({
-                    updateUser:{
-                        country:country,
-                        id:prevState.updateUser.id,
-                        firstName:prevState.updateUser.firstName, 
-                        middleName:prevState.updateUser.middleName, 
-                        lastName:prevState.updateUser.lastName,
-                        userName:prevState.updateUser.userName,
-                        gender:prevState.updateUser.gender,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        program:prevState.updateUser.program,
-                        city:prevState.updateUser.city,
-                        email:prevState.updateUser.email
-                    }}),
-                    ()=>{
-                            console.log("New Value :"+this.state.updateUser.city)
-                        }
-                );
-                break;                
-            }
-            case "city":
-            {
-                var city=event.target.value;
-                this.setState(prevState => ({
-                    updateUser:{
-                        city:city,
-                        id:prevState.updateUser.id,
-                        firstName:prevState.updateUser.firstName, 
-                        middleName:prevState.updateUser.middleName, 
-                        lastName:prevState.updateUser.lastName,
-                        userName:prevState.updateUser.userName,
-                        gender:prevState.updateUser.gender,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        country:prevState.updateUser.country,
-                        program:prevState.updateUser.program,
-                        email:prevState.updateUser.email
-                    }}),
-                    ()=>{
-                            console.log("New Value :"+this.state.updateUser.city)
-                        }
-                );
-                break;                
-            }
-            case "program":
-            {
-                var program=event.target.value;
-                this.setState(prevState => ({
-                    updateUser:{
-                        program:program,
-                        id:prevState.updateUser.id,
-                        firstName:prevState.updateUser.firstName, 
-                        middleName:prevState.updateUser.middleName, 
-                        lastName:prevState.updateUser.lastName,
-                        userName:prevState.updateUser.userName,
-                        gender:prevState.updateUser.gender,
-                        dateOfBirth:prevState.updateUser.dateOfBirth,
-                        country:prevState.updateUser.country,
-                        city:prevState.updateUser.city,
-                        email:prevState.updateUser.email
-                    }}),
-                    ()=>{
-                            console.log("New Value :"+this.state.updateUser.program)
-                        }
-                );
-                break;                
-            }
-            case "dateOfBirth":
-            {
-                var dateOfBirth=event.target.value;
-                this.setState(prevState => ({
-                    updateUser:{
-                        dateOfBirth:dateOfBirth,
-                        id:prevState.updateUser.id,
-                        firstName:prevState.updateUser.firstName, 
-                        middleName:prevState.updateUser.middleName, 
-                        lastName:prevState.updateUser.lastName,
-                        userName:prevState.updateUser.userName,
-                        gender:prevState.updateUser.dateOfBirth,
-                        program:prevState.updateUser.program,
-                        country:prevState.updateUser.country,
-                        city:prevState.updateUser.city,
-                        email:prevState.updateUser.email
-                    }}),
-                    ()=>{
-                            console.log("New Value :"+this.state.updateUser.program)
-                        }
-                );
-                break;                
-            }
+            }            
             default:
             {
                 console.log("Found it");
@@ -441,38 +149,38 @@ class UpdatePlayer2 extends Component {
             <div className="App">
             <div>
                 <form className="playerForm" onSubmit={this.handleSubmit} >
-                        <label>Search by Player Id 
+                        <label>Search by Player email 
                             <input type="text" name="useridI" value={this.state.useridI||''} onChange={this.handleChangeS}/> <br/>
                         </label>
                         <label>Player Id 
-                            <input type="text" name="userid" readOnly value={this.state.updateUser.id||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="userid" readOnly value={this.state.player_id||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>First name 
-                            <input type="text" name="firstName" onKeyDown={this.handleKeyDown} value={this.state.updateUser.firstName||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="firstName" onKeyDown={this.handleKeyDown} value={this.state.firstname||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>Middle name 
-                            <input type="text" name="middleName" value={this.state.updateUser.middleName||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="middleName" value={this.state.middleName||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>Last name 
-                            <input type="text" name="lastName" value={this.state.updateUser.lastName||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="lastName" value={this.state.family_name||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>User name 
-                            <input type="text" name="userName" value={this.state.updateUser.userName||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="userName" value={this.state.username||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>email 
-                            <input type="text" name="email" className={email}  value={this.state.updateUser.email||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="email" className={email}  value={this.state.email||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>Gender 
-                            <input type="radio" ref="gender" name="gender" value={this.state.updateUser.gender} checked={this.state.updateUser.gender==='Female'} onChange={this.handleChange}/> Female
-                            <input type="radio" ref="gender" name="gender" value={this.state.updateUser.gender} checked={this.state.updateUser.gender==='Male'}  onChange={this.handleChange}  /> Male 
-                            <input type="radio" ref="gender" name="gender" value={this.state.updateUser.gender} checked={this.state.updateUser.gender==='Other'}  onChange={this.handleChange} /> Other  
+                            <input type="radio" ref="gender" name="gender" value={this.state.gender} checked={this.state.gender==='Female'} onChange={this.handleChange}/> Female
+                            <input type="radio" ref="gender" name="gender" value={this.state.gender} checked={this.state.gender==='Male'}  onChange={this.handleChange}  /> Male 
+                            <input type="radio" ref="gender" name="gender" value={this.state.gender} checked={this.state.gender==='Other'}  onChange={this.handleChange} /> Other  
                             <br/>
                         </label>
                         <label>Date of Birth 
-                        <DatePicker name="dateOfBirth" onChange={this.handleDate} value={(moment(this.state.updateUser.dateOfBirth).format('MM-DD-YYYY'))}  isClearable={true} dateFormat="MM/dd/yyyy" placeholderText="MM/dd/yyyy"/> <br/>
+                        <DatePicker name="dateOfBirth" onChange={this.handleDate} value={(moment(this.state.dateOfBirth).format('MM-DD-YYYY'))}  isClearable={true} dateFormat="MM/dd/yyyy" placeholderText="MM/dd/yyyy"/> <br/>
                         </label>
                         <label> Country
-                        <select name="country" value={this.state.updateUser.country} onChange={this.handleChange} >
+                        <select name="country" value={this.state.country} onChange={this.handleChange} >
                                 <option value="Afghanistan">Afghanistan</option><option value="Albania">Albania</option><option value="Algeria">Algeria</option>
                                 <option value="Andorra">Andorra</option><option value="Angola">Angola</option><option value="AntiguaandBarbuda">Antigua and Barbuda</option>
                                 <option value="Argentina">Argentina</option><option value="Armenia">Armenia</option><option value="Australia">Australia</option>                      
@@ -545,11 +253,11 @@ class UpdatePlayer2 extends Component {
                         </label>
                         <br/>
                         <label>City 
-                            <input type="text" name="city" value={this.state.updateUser.city||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="city" value={this.state.city||''} onChange={this.handleChange}/> <br/>
                         </label>
                        
                         <label>Program 
-                            <input type="text" name="program" value={this.state.updateUser.program||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="program" value={this.state.program||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <br/>
                         <label>
@@ -557,7 +265,7 @@ class UpdatePlayer2 extends Component {
                             className="btn btn-link float-left"
                             onClick={this.handleClearForm}>Clear
                         </button>
-                        <input type="button" name="update" onClick={this.handleSearch} value="Search"/>                        
+                        <input type="button" onClick={this.handleSearch} value="Search"/>                        
                         <button type="submit">Update</button>                                        
                         </label>
                 </form>

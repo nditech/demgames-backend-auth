@@ -48,9 +48,7 @@ class List2 extends Component {
         this.pool();
      }
  
-     simpleTable(){ 
-         
-         
+     simpleTable(){      
  
          return(
                   <Paper>

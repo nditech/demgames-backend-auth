@@ -12,6 +12,7 @@ import ListGames from './components/ListGames';
 import ListQuestions from './components/ListQuestions';
 import ListChoices from './components/ListChoices';
 import Profile from './components/Profile';
+import UpdatePlayer from './components/UpdatePlayer2';
 
 class App extends Component{
   constructor(props) {
@@ -35,6 +36,9 @@ class App extends Component{
             break;
         case "Home":
             mainComponent=<Main {...this.state}/>
+            break;
+        case "profile":
+            mainComponent=this.props.auth0.isAuthenticated()?<Profile exact {...this.state}/>:<NotFound/>;
             break;
         case "Profile":
             mainComponent=this.props.auth0.isAuthenticated()?<Profile exact {...this.state}/>:<NotFound/>;
@@ -68,6 +72,9 @@ class App extends Component{
             break;
         case "ListChoices":
             mainComponent=this.props.auth0.isAuthenticated()?<ListChoices exact {...this.state}/>:<NotFound/>;
+            break;
+        case "UpdatePlayer":
+            mainComponent=this.props.auth0.isAuthenticated()?<UpdatePlayer exact {...this.state}/>:<NotFound/>;
             break;
         case "callback":
             mainComponent=<Callback {...this.state}/>;

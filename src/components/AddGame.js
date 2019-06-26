@@ -54,8 +54,8 @@ class AddGame extends Component {
       // alert(this.state.firstName+this.state.middleName+this.state.lastName+this.state.userName+this.state.email+this.state.gender+this.state.dateOfBirth+this.state.country+this.state.city+this.state.program)
        console.log(JSON.stringify(this.state));
        
-       const url ='/registergame';
-       fetch('/registergame', {
+       const url ='http://localhost:3001/registergame';
+       fetch(url, {
         method: 'POST',
         headers: {
             'Accept':'application/json',
