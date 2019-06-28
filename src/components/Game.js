@@ -28,35 +28,37 @@ class Game extends Component{
    }
    
    componentDidMount(){
-    if(this.state.email!==null)
+    if(this.props.email!==null)
     {        
         const encodedValue1 = encodeURIComponent(this.props.email); 
-        const encodedValue2 = encodeURIComponent(this.props.username);
-        const encodedValue3 = encodeURIComponent(this.props.given_name); 
-        const encodedValue4 = encodeURIComponent(this.props.family_name);  
-           
-        fetch(`http://localhost:3001/selectPlayerProfile?email=${encodedValue1}&username=${encodedValue2}&given_name=${encodedValue3}&family_name=${encodedValue4}`, {
-        method: 'get',        
-        headers: {
-          "Content-Type": "Application/json",
-          "Accept":"application/json"
-        }
-      })
-      .then((res) => res.json())      
-      .then((data)=>{
-          console.log(data);
-          this.setState({
-              
-              play_id:data[0].play_id,
-              player_id:data[0].player_id,
-              game_id:data[0].game_id,
-              score:data[0].score,
-              total:data[0].total,
-              program_rank:data[0].program_rank,
-              total_rank:data[0].total_rank
-          });
-      })
-      .catch((error)=>console.log(error))  
+        fetch(`http://localhost:3001/selectPlayerProfile`, {
+            method: 'post',        
+            headers: {
+              "Content-Type": "Application/json",
+              "Accept":"application/json"
+            },
+            body: JSON.stringify(this.state)
+          })
+          .then((res) => res.json())      
+          .then((data)=>{
+              console.log(data);
+              this.setState({              
+                  play_id:data[0].play_id,
+                  player_id:data[0].player_id,
+                  game_id:data[0].game_id,
+                  username:data[0].username,
+                  score:data[0].score,
+                  total:data[0].total,
+                  gender:data[0].gender,
+                  city:data[0].city,
+                  country:data[0].country,
+                  program:data[0].program,
+                  program_rank:data[0].program_rank,
+                  total_rank:data[0].total_rank,
+                  email:data[0].email
+              });
+          })
+          .catch((error)=>console.log(error))  
     }
    }
 
@@ -70,15 +72,12 @@ class Game extends Component{
    }
 
    handleSubmit(e){
-        e.preventDefault();        
-       
-        this.setState({
-            
+        e.preventDefault();               
+        this.setState({            
             total:Number(this.state.current)+Number(this.state.total),
             score:this.state.current
         }
-        );
-       
+        );       
         const url ="http://localhost:3001/updateplayerscore";
         fetch(url, {
         method: 'POST',

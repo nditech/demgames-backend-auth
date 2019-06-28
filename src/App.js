@@ -23,6 +23,7 @@ class App extends Component{
         email:this.props.email,
         username:this.props.username,
         location:this.props.location,
+        gender:this.props.gender,
         auth0:this.props.auth0
       };
   }
@@ -87,7 +88,7 @@ class App extends Component{
 
             <header className="App-header">
                     
-              <img src="" className="App-logo" alt="logo" />
+              <img src={this.props.picture} className="App-logo" alt="Player picture" />
               <h2>{this.props.given_name+" "+this.props.family_name}</h2> 
               </header>
               {mainComponent}         

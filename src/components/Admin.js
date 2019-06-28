@@ -48,30 +48,37 @@ class Admin extends Component{
    }
    
    componentDidMount(){
-    if(this.state.email!==null)
+    if(this.props.email!==null)
     {
-        const encodedValue = encodeURIComponent(this.state.email);       
-       // const url ="http://localhost:3001/selectPlayerProfile";
-        fetch(`http://localhost:3001/selectPlayerProfile?email=${encodedValue}`, {
-        method: 'get',
-        
-        headers: {
-          "Content-Type": "Application/json",
-          "Accept":"application/json"
-        }
-      })
-      .then((res) => res.json())      
-      .then((data)=>{
-          console.log(data.length);
-          console.log(data[0].score);
-          this.setState({
-              score:data[0].score,
-              total:data[0].total,
-              program_rank:data[0].program_rank,
-              total_rank:data[0].total_rank
-          });
-      })
-      .catch((error)=>console.log(error))  
+        const encodedValue = encodeURIComponent(this.state.email);               
+        fetch(`http://localhost:3001/selectPlayerProfile`, {
+            method: 'post',        
+            headers: {
+              "Content-Type": "Application/json",
+              "Accept":"application/json"
+            },
+            body: JSON.stringify(this.state)
+        })
+        .then((res) => res.json())      
+        .then((data)=>{
+            console.log(data);
+            this.setState({              
+                play_id:data[0].play_id,
+                player_id:data[0].player_id,
+                game_id:data[0].game_id,
+                username:data[0].username,
+                score:data[0].score,
+                total:data[0].total,
+                gender:data[0].gender,
+                city:data[0].city,
+                country:data[0].country,
+                program:data[0].program,
+                program_rank:data[0].program_rank,
+                total_rank:data[0].total_rank,
+                email:data[0].email
+            });
+        })
+        .catch((error)=>console.log(error))   
     }
    }
 
@@ -80,13 +87,11 @@ class Admin extends Component{
        const sc=e.target.value;
        this.setState({
            score:sc}
-       );
-      
+       );      
    }
 
 
    handleSubmit(e){
-
         e.preventDefault();
         
         this.setState({

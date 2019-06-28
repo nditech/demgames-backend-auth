@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 
+
 class UpdatePlayer2 extends Component {
   
     constructor(props){
@@ -19,6 +20,7 @@ class UpdatePlayer2 extends Component {
                 email:this.props.email,
                 player_id:null,
                 firstname:this.props.given_name,
+                middlename:this.props.middlename||null,
                 family_name:this.props.family_name,
                 username:this.props.username,
                 picture:this.props.picture,
@@ -26,44 +28,77 @@ class UpdatePlayer2 extends Component {
                 total:0,
                 program_rank:null,
                 total_rank:null,
-                useridI:null 
-            }                    
-
-        this.handleSearch=this.handleSearch.bind(this);
+                useridI:null,
+                user_email:null,
+                
+                searched:{
+                    current:0,
+                    score:0,
+                    play_id:null,
+                    player_id:null,
+                    game_id:null,
+                    email:null,
+                    player_id:null,
+                    firstname:null,
+                    middlename:null,
+                    family_name:null,
+                    dateOfBirth:null,
+                    username:null,
+                    picture:null,
+                    gender:null,
+                    total:0,
+                    program_rank:null,
+                    total_rank:null,
+                } 
+        }                    
        
+        this.handleSearch=this.handleSearch.bind(this);       
        // this.handleDate = this.handleDate.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit  = this.handleSubmit.bind(this);
-        this.handleChangeS = this.handleChangeS.bind(this);      
+        this.handleClearForm = this.handleClearForm.bind(this);      
     }
 
-   
+    handleClearForm(){
+        alert("Hello");
+    }
 
     handleSearch(event){
-        alert(this.props.email);
-
-        if(this.state.email!==null)
-        {        
-            const encodedValue1 = encodeURIComponent(this.props.email);  
-           
-            fetch(`http://localhost:3001/selectPlayerProfile?email=${encodedValue1}`, {
-            method: 'get',        
-            headers: {
-            "Content-Type": "Application/json",
-            "Accept":"application/json"
-            }
-        })
-        .then((res) => res.json())      
-        .then((data)=>{
-            console.log(data);
-            this.setState({                             
-                player_id:data[0].player_id,
-                given_name:data[0].given_name,
-                family_name:data[0].family_name,
-                username:data[0].username,
-                gender:this.props.gender
-
-            });
+        event.preventDefault();
+        if(this.state.searched.user_email!==null)
+        {   
+            const url =`http://localhost:3001/selectPlayerProfile`;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                  "Content-Type": "Application/json",
+                  "Accept":"application/json"
+                },
+                body: JSON.stringify(this.state.updateUser),
+                 mode:'cors'
+            })                           
+            .then((res) => res.json())      
+            .then((data)=>{
+            console.log(data);            
+            const newState = 
+            {...this.state.searched, 
+                    player_id:data[0].player_id,
+                    firstname:data[0].given_name,
+                    middlename:data[0].middlename,
+                    family_name:data[0].family_name,
+                    username:data[0].username,
+                    user_email:data[0].user_email,
+                    city:data[0].city,
+                    country:data[0].country,
+                    gender:data[0].gender,
+                    dateOfBirth:data[0].dateOfBirth
+            }                   
+            this.setState(
+                {
+                    searched:newState
+                }
+                ,()=> console.log("Data is pooled from server.")
+            );
         })
         .catch((error)=>console.log(error))  
         }
@@ -71,26 +106,138 @@ class UpdatePlayer2 extends Component {
 
 
     handleChange(event) { 
-        event.preventDefault();
-          
+        event.preventDefault();                  
         switch(event.target.name){
-            case "userid":
-            {
-                var val=event.target.value;  
-                this.setState({
-                    player_id:val
-                 } );
-                break;
-            }
-            case "firstName":
+            case "user_email":
             {   
-                var firstName=event.target.value;    
-                this.setState({
-                    firstname:firstName
-                }
+                var val=event.target.value; 
+                const newState = {...this.state.searched, user_email: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.user_email)
                 );
                 break;
-            }            
+            }
+            case "firstname":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, firstname: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.firstname)
+                );
+                break;
+            }
+            case "middlename":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, middlename: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.middlename)
+                );
+                break;
+            }
+            case "family_name":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, family_name: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.family_name)
+                );
+                break;
+            } 
+            case "username":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, username: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.username)
+                );
+                break;
+            }
+            case "gender":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, gender: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.gender)
+                );
+                break;
+            } 
+            case "program":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, program: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.program)
+                );
+                break;
+            }
+            case "city":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, city: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.city)
+                );
+                break;
+            } 
+            case "country":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, country: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.country)
+                );
+                break;
+            }
+            case "dateOfBirth":
+            {   
+                var val=event.target.value; 
+                const newState = {...this.state.searched, dateOfBirth: val}   
+                
+                this.setState(
+                    {
+                        searched:newState
+                    }
+                    ,()=> console.log(this.state.searched.dateOfBirth)
+                );
+                break;
+            }         
             default:
             {
                 console.log("Found it");
@@ -99,34 +246,9 @@ class UpdatePlayer2 extends Component {
         }             
    }
 
-   handleChangeS(event) { 
-    event.preventDefault();
-    var valId=event.target.value;
-    switch(event.target.name){
-        case "useridI":
-        {
-            this.setState(
-                {
-                    useridI:valId
-                },
-                ()=>{
-                    console.log("value"+this.state.useridI)
-                }
-            );
-            break;
-        }                
-        default:
-        {
-                console.log("Found it");
-        }
-    }                   
-   }
-
-
    handleSubmit(event) 
    {          
-       event.preventDefault();
-              
+       event.preventDefault();              
        const url ="http://localhost:3001/updateplayer";
        fetch(url, {
         method: 'POST',
@@ -144,40 +266,45 @@ class UpdatePlayer2 extends Component {
     }
            
    render() {
-      const {email} = this.props;
+      
       return (
-            <div className="App">
-            <div>
-                <form className="playerForm" onSubmit={this.handleSubmit} >
-                        <label>Search by Player email 
-                            <input type="text" name="useridI" value={this.state.useridI||''} onChange={this.handleChangeS}/> <br/>
-                        </label>
+                <div className="App">
+                <div>
+                <form className="playerForm" onSubmit={this.handleSearch} >
+                            <label>Search by Player email 
+                                <input type="text" name="user_email" value={this.state.searched.user_email||''} onChange={this.handleChange}/> <br/>
+                            </label>
+                            <input type="submit" value="Search"/>    
+                </form>
+
+                <div className='formParent' style={{display: 'true'}}>
+                <form className="updateForm" onSubmit={this.handleSubmit}>
                         <label>Player Id 
-                            <input type="text" name="userid" readOnly value={this.state.player_id||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="player_id" value={this.state.searched.player_id||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>First name 
-                            <input type="text" name="firstName" onKeyDown={this.handleKeyDown} value={this.state.firstname||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="firstname" value={this.state.searched.firstname||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>Middle name 
-                            <input type="text" name="middleName" value={this.state.middleName||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="middlename" value={this.state.searched.middlename||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>Last name 
-                            <input type="text" name="lastName" value={this.state.family_name||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="family_name" value={this.state.searched.family_name||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>User name 
-                            <input type="text" name="userName" value={this.state.username||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="username" value={this.state.searched.username||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>email 
-                            <input type="text" name="email" className={email}  value={this.state.email||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="email" value={this.state.searched.email||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>Gender 
-                            <input type="radio" ref="gender" name="gender" value={this.state.gender} checked={this.state.gender==='Female'} onChange={this.handleChange}/> Female
-                            <input type="radio" ref="gender" name="gender" value={this.state.gender} checked={this.state.gender==='Male'}  onChange={this.handleChange}  /> Male 
-                            <input type="radio" ref="gender" name="gender" value={this.state.gender} checked={this.state.gender==='Other'}  onChange={this.handleChange} /> Other  
+                            <input type="radio" ref="gender" name="gender" value={this.state.searched.gender} checked={this.state.gender==='Female'} onChange={this.handleChange}/> Female
+                            <input type="radio" ref="gender" name="gender" value={this.state.searched.gender} checked={this.state.gender==='Male'}  onChange={this.handleChange}  /> Male 
+                            <input type="radio" ref="gender" name="gender" value={this.state.searched.gender} checked={this.state.gender==='Other'}  onChange={this.handleChange} /> Other  
                             <br/>
                         </label>
                         <label>Date of Birth 
-                        <DatePicker name="dateOfBirth" onChange={this.handleDate} value={(moment(this.state.dateOfBirth).format('MM-DD-YYYY'))}  isClearable={true} dateFormat="MM/dd/yyyy" placeholderText="MM/dd/yyyy"/> <br/>
+                        <DatePicker name="dateOfBirth" onChange={this.handleDate} value={(moment(this.state.searched.dateOfBirth).format('MM-DD-YYYY'))}  isClearable={true} dateFormat="MM/dd/yyyy" placeholderText="MM/dd/yyyy"/> <br/>
                         </label>
                         <label> Country
                         <select name="country" value={this.state.country} onChange={this.handleChange} >
@@ -253,22 +380,22 @@ class UpdatePlayer2 extends Component {
                         </label>
                         <br/>
                         <label>City 
-                            <input type="text" name="city" value={this.state.city||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="city" value={this.state.searched.city||''} onChange={this.handleChange}/> <br/>
                         </label>
                        
                         <label>Program 
-                            <input type="text" name="program" value={this.state.program||''} onChange={this.handleChange}/> <br/>
+                            <input type="text" name="program" value={this.state.searched.program||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <br/>
                         <label>
                         <button
-                            className="btn btn-link float-left"
                             onClick={this.handleClearForm}>Clear
-                        </button>
-                        <input type="button" onClick={this.handleSearch} value="Search"/>                        
-                        <button type="submit">Update</button>                                        
+                        </button>                                            
+                        <button type="submit">Update</button>    
+                        <button onClick={this.props.auth0.logout}>Log out</button>                                    
                         </label>
                 </form>
+                </div>
             </div>            
       </div>
     );

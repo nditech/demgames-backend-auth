@@ -3,7 +3,6 @@
 import auth0 from 'auth0-js';
 //import jwtDecode from "jwt-decode";
 import jwtDecode from 'jwt-decode';
-
 const LOGIN_SUCCESS_PAGE="/game";
 const LOGIN_FAILURE_PAGE="/";
 
@@ -15,7 +14,7 @@ export default class Auth {
     redirectUri: 'http://localhost:3000/callback',
     audience:'https://dev-berhanu.auth0.com/userinfo',
     responseType: 'token id_token',
-    scope: 'openid profile email'
+    scope: 'openid profile email address'
   });
 
   constructor() {
@@ -24,22 +23,17 @@ export default class Auth {
 
   login() {
     this.auth0.authorize({
-      //realm: 'berhanu-auth0-db-connection',
       prompt:'login'});
   }
-
 
   logout() {
     // Remove tokens and expiry time
     localStorage.removeItem("access_token");
     localStorage.removeItem("id_token");
     localStorage.removeItem("expires_at");
-
     // Remove isLoggedIn flag from localStorage
     localStorage.removeItem('isLoggedIn');
-
     location.pathname= LOGIN_FAILURE_PAGE;
-
   }
 
   signup(){
@@ -49,18 +43,10 @@ export default class Auth {
         email: 'Berhanub@gmail.com', 
         password: null,
         username: null
-        /*given_name: null,
-        family_name: null,
-        name: "John Doe",
-        nickname: "johnny",
-        picture: "http://example.org/jdoe.png",
-        user_metadata: { program: 'null', gender: 'null' }
-        */
     }, function (err) { 
        if (err) return alert('Something went wrong: ' + err.message); 
          return alert('success signup without login!') 
-    });
-    
+    });    
   }
   
   handleAuthentication(){
@@ -76,7 +62,6 @@ export default class Auth {
           location.pathname=LOGIN_FAILURE_PAGE;
           console.log(error);
         }
-
     });
   }
 
