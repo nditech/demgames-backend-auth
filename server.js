@@ -203,6 +203,36 @@ const connectionMysql =mysql.createConnection({
      })   
   })
   
+  //Lists all games from mysql database
+  app2.post('/selectGame',(req,res)=>{
+    const id=req.body.game_id;
+    connectionMysql.query('select * from Games where id="'+id+'"',(err, data, fields)=>{
+      if(err){ 
+        console.log("Not Successful access to games");
+      }else{
+            console.log(JSON.stringify(data));     
+            res.status(200).send(JSON.stringify(data));
+      }
+    });   
+             
+  }) 
+  
+  //Update games from mysql database
+  app2.post('/updateGame',(req,res)=>{
+   // const id=req.body.game_id;
+    const sqlUpdateStatement='update games set caption="'+req.body.caption+'", gamedescription="'+req.body.gamedescription+'", gametype="'+req.body.gametype+'" where id = "'+req.body.game_id+'"';
+            
+            console.log(sqlUpdateStatement);
+            connectionMysql.query(sqlUpdateStatement, function (err, result, fields) {
+               if (err) throw err;
+               console.log(sqlUpdateStatement);
+               console.log("Number of rows affected : " + result.affectedRows);
+               console.log("Number of records affected with warning : " + result.warningCount);
+               console.log("Message from MySQL Server : " + result.message); 
+               res.status(200).send(JSON.stringify(result));              
+              }); 
+  })   
+
   // List all questions from mysql
   app2.get('/listquestions',(req,res)=>{
     // res.set('Content-Type', 'application/json');     
@@ -320,6 +350,28 @@ const connectionMysql =mysql.createConnection({
       }  
     });
   })
-app2.listen(PORT2, () => console.log('Demgames server listening on port 3001!'));
 
+  app2.post('/selectPlayer',(req, res)=>{
+    var email=req.body.email;
+    console.log(email);  
+    const sqlS="select * from plays inner join players on plays.player_id=players.id where players.email='"+email+"'";      
+    connectionMysql.query(sqlS,(err, data, fields)=>
+    {
+        if(err){ 
+          console.log("Not Successful access");        
+        }
+        else
+        {
+          if(data.length>0)
+          {  
+            console.log('Yes data is found');
+            res.send(data)
+          }
+          else
+            console.log('Data not found');
+        }
+  })
+  })
+
+app2.listen(PORT2, () => console.log('Demgames server listening on port 3001!'));
 

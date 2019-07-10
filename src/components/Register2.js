@@ -223,10 +223,18 @@ class Register2 extends Component {
                         <br/>
                         <label>City 
                             <input type="text" name="city" value={this.state.city} onChange={this.handleChange}/> <br/>
+                            
                         </label>
                        
                         <label>Program 
-                            <input type="text" name="program" value={this.state.program} onChange={this.handleChange}/> <br/>
+                            
+                            <select name="program" value={this.state.selectValue} onChange={this.handleChange} >
+                                <option value="M&E">Monitoring & Evaluation</option>
+                                <option value="Elections">Elections</option>
+                                <option value="Governance">Governance</option>                      
+                                <option value="GWD">Gender, Women & Democracy</option>
+                            </select>
+                            <br/>
                         </label>
                         <br/>
                         <button type="submit">Save</button> | <button type="button" onClick={this.reset}>Reset</button> | <button onClick={this.props.logout}>Log out</button>                 

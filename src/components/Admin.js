@@ -24,6 +24,7 @@ import game from './Game';
 import Auth from '../Auth';
 import NotFound from './NotFound';
 import { withRouter } from 'react-router-dom';
+import UpdateGame from './UpdateGame';
 
 const auth=  new Auth();
 
@@ -122,7 +123,7 @@ class Admin extends Component{
                         <Router>
                         <div>
                            <Link to="/Register">Register</Link> || <Link to="/List">List players</Link> || <Link to="/ListGames">List games</Link> || 
-                           <Link to="/ListQuestions">List questions</Link> || <Link to="/ListChoices">List choices</Link> || <Link to="/UpdatePlayer">Update Player</Link>  
+                           <Link to="/ListQuestions">List questions</Link> || <Link to="/ListChoices">List choices</Link> || <Link to="/UpdatePlayer">Update Player</Link> || <Link to="/updateGame">Update Game</Link>  
                            || <Link to="/UpdateQuestion">Update question</Link> || <Link to="/UpdateChoice">Update choice</Link> || <Link to="/AddGame">Add game</Link>
                             || <Link to="/AddQuestion">Add question</Link> || <Link to="/AddChoice">Add choice</Link> || <Link to="/RemoveUser">Remove player</Link>
                             || <Link to="/RemoveQuestion">Remove question</Link> || <Link to="/RemoveChoice">Remove choice</Link>           
@@ -143,6 +144,8 @@ class Admin extends Component{
                             <Route path="/RemoveUser" component={RemoveUser}/>
                             <Route path="/RemoveQuestion" component={RemoveQuestion}/>
                             <Route path="/RemoveChoice" component={RemoveChoice}/>
+                            <Route path="/updateGame" component={UpdateGame}/>
+                            
 
                         </div>
                         </Router>

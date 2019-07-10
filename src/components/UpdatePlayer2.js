@@ -53,29 +53,33 @@ class UpdatePlayer2 extends Component {
         }                    
        
         this.handleSearch=this.handleSearch.bind(this);       
-       // this.handleDate = this.handleDate.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit  = this.handleSubmit.bind(this);
-        this.handleClearForm = this.handleClearForm.bind(this);      
+        this.handleClearForm = this.handleClearForm.bind(this);    
+        this.logout=this.logout.bind(this);  
     }
 
     handleClearForm(){
         alert("Hello");
     }
 
+    logout(){
+        this.props.auth0.logout()
+    }
+    
     handleSearch(event){
         event.preventDefault();
         if(this.state.searched.user_email!==null)
         {   
-            const url =`http://localhost:3001/selectPlayerProfile`;
+            const url =`http://localhost:3001/selectPlayer`;
             fetch(url, {
                 method: 'POST',
                 headers: {
                   "Content-Type": "Application/json",
                   "Accept":"application/json"
                 },
-                body: JSON.stringify(this.state.updateUser),
-                 mode:'cors'
+                body: JSON.stringify({email:this.state.user_email}),
+                mode:'cors'
             })                           
             .then((res) => res.json())      
             .then((data)=>{
@@ -83,15 +87,16 @@ class UpdatePlayer2 extends Component {
             const newState = 
             {...this.state.searched, 
                     player_id:data[0].player_id,
-                    firstname:data[0].given_name,
+                    firstname:data[0].firstname,
                     middlename:data[0].middlename,
-                    family_name:data[0].family_name,
+                    family_name:data[0].lastname,
                     username:data[0].username,
-                    user_email:data[0].user_email,
+                    email:data[0].email,
                     city:data[0].city,
                     country:data[0].country,
                     gender:data[0].gender,
-                    dateOfBirth:data[0].dateOfBirth
+                    dateOfBirth:data[0].dateOfBirth,
+                    program:data[0].program
             }                   
             this.setState(
                 {
@@ -106,18 +111,17 @@ class UpdatePlayer2 extends Component {
 
 
     handleChange(event) { 
-        event.preventDefault();                  
+        event.preventDefault();    
+        var val=event.target.value;              
         switch(event.target.name){
             case "user_email":
             {   
-                var val=event.target.value; 
-                const newState = {...this.state.searched, user_email: val}   
-                
+                var val=event.target.value;                 
                 this.setState(
                     {
-                        searched:newState
+                        user_email:val
                     }
-                    ,()=> console.log(this.state.searched.user_email)
+                    ,()=> console.log(this.state.user_email)
                 );
                 break;
             }
@@ -174,18 +178,18 @@ class UpdatePlayer2 extends Component {
                 break;
             }
             case "gender":
-            {   
-                var val=event.target.value; 
-                const newState = {...this.state.searched, gender: val}   
-                
-                this.setState(
-                    {
-                        searched:newState
+                    {   
+                        var val=event.target.value; 
+                        const newState = {...this.state.searched, gender: val}   
+                        
+                        this.setState(
+                            {
+                                searched:newState
+                            }
+                            ,()=> console.log(this.state.searched.gender)
+                        );
+                        break;
                     }
-                    ,()=> console.log(this.state.searched.gender)
-                );
-                break;
-            } 
             case "program":
             {   
                 var val=event.target.value; 
@@ -248,7 +252,20 @@ class UpdatePlayer2 extends Component {
 
    handleSubmit(event) 
    {          
-       event.preventDefault();              
+       event.preventDefault(); 
+       const data={
+                    player_id:this.state.searched.player_id,
+                    given_name:this.state.searched.firstname,
+                    middle_name:this.state.searched.middlename,
+                    family_name:this.state.searched.family_name,
+                    username:this.state.searched.username,
+                    email:this.state.searched.email,
+                    city:this.state.searched.city,
+                    country:this.state.searched.country,
+                    gender:this.state.searched.gender,
+                    dateOfBirth:this.state.searched.dateOfBirth,
+                    program:this.state.searched.program
+        }             
        const url ="http://localhost:3001/updateplayer";
        fetch(url, {
         method: 'POST',
@@ -256,7 +273,7 @@ class UpdatePlayer2 extends Component {
           "Content-Type": "Application/json",
           "Accept":"application/json"
         },
-        body: JSON.stringify(this.state.updateUser),
+        body: JSON.stringify(data),
         mode:'cors'
       })
       .then((res) => res.json())      
@@ -272,7 +289,7 @@ class UpdatePlayer2 extends Component {
                 <div>
                 <form className="playerForm" onSubmit={this.handleSearch} >
                             <label>Search by Player email 
-                                <input type="text" name="user_email" value={this.state.searched.user_email||''} onChange={this.handleChange}/> <br/>
+                                <input type="text" name="user_email" value={this.state.user_email||''} onChange={this.handleChange}/> <br/>
                             </label>
                             <input type="submit" value="Search"/>    
                 </form>
@@ -298,16 +315,16 @@ class UpdatePlayer2 extends Component {
                             <input type="text" name="email" value={this.state.searched.email||''} onChange={this.handleChange}/> <br/>
                         </label>
                         <label>Gender 
-                            <input type="radio" ref="gender" name="gender" value={this.state.searched.gender} checked={this.state.gender==='Female'} onChange={this.handleChange}/> Female
-                            <input type="radio" ref="gender" name="gender" value={this.state.searched.gender} checked={this.state.gender==='Male'}  onChange={this.handleChange}  /> Male 
-                            <input type="radio" ref="gender" name="gender" value={this.state.searched.gender} checked={this.state.gender==='Other'}  onChange={this.handleChange} /> Other  
+                            <input type="radio" name="gender" value="Female" checked={this.state.searched.gender==='Female'} onChange={this.handleChange}/> Female
+                            <input type="radio" name="gender" value="Male" checked={this.state.searched.gender==='Male'}  onChange={this.handleChange}  /> Male 
+                            <input type="radio" name="gender" value="Other" checked={this.state.searched.gender==='Other'}  onChange={this.handleChange} /> Other  
                             <br/>
                         </label>
                         <label>Date of Birth 
                         <DatePicker name="dateOfBirth" onChange={this.handleDate} value={(moment(this.state.searched.dateOfBirth).format('MM-DD-YYYY'))}  isClearable={true} dateFormat="MM/dd/yyyy" placeholderText="MM/dd/yyyy"/> <br/>
                         </label>
                         <label> Country
-                        <select name="country" value={this.state.country} onChange={this.handleChange} >
+                        <select name="country" value={this.state.searched.country} onChange={this.handleChange} >
                                 <option value="Afghanistan">Afghanistan</option><option value="Albania">Albania</option><option value="Algeria">Algeria</option>
                                 <option value="Andorra">Andorra</option><option value="Angola">Angola</option><option value="AntiguaandBarbuda">Antigua and Barbuda</option>
                                 <option value="Argentina">Argentina</option><option value="Armenia">Armenia</option><option value="Australia">Australia</option>                      
@@ -392,7 +409,7 @@ class UpdatePlayer2 extends Component {
                             onClick={this.handleClearForm}>Clear
                         </button>                                            
                         <button type="submit">Update</button>    
-                        <button onClick={this.props.auth0.logout}>Log out</button>                                    
+                        <button onClick={this.logout}>Log out</button>                                    
                         </label>
                 </form>
                 </div>

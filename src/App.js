@@ -13,6 +13,7 @@ import ListQuestions from './components/ListQuestions';
 import ListChoices from './components/ListChoices';
 import Profile from './components/Profile';
 import UpdatePlayer from './components/UpdatePlayer2';
+import updateGame from './components/UpdateGame';
 
 class App extends Component{
   constructor(props) {
@@ -76,6 +77,9 @@ class App extends Component{
             break;
         case "UpdatePlayer":
             mainComponent=this.props.auth0.isAuthenticated()?<UpdatePlayer exact {...this.state}/>:<NotFound/>;
+            break;
+        case "updateGame":
+            mainComponent=this.props.auth0.isAuthenticated()?<updateGame exact {...this.state}/>:<NotFound/>;
             break;
         case "callback":
             mainComponent=<Callback {...this.state}/>;
