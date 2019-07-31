@@ -90,8 +90,7 @@ class App extends Component{
       return (
           <div className="App">
 
-            <header className="App-header">
-                    
+            <header className="App-header">       
               <img src={this.props.picture} className="App-logo" alt="Player picture" />
               <h2>{this.props.given_name+" "+this.props.family_name}</h2> 
               </header>

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Auth from "../Auth";
 
-class Game extends Component{
+class Profile extends Component{
    constructor(props){
        super(props);
        this.state={
@@ -204,4 +204,4 @@ class Game extends Component{
     }
 }
 
-export default Game;
+export default Profile;

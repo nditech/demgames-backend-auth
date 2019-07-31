@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import Auth from './Auth';
-import jwtDecode from 'jwt-decode';
+//import jwtDecode from 'jwt-decode';
 
 const auth0=new Auth();
 let state={};

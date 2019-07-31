@@ -120,6 +120,7 @@ class Admin extends Component{
   ;      
         return (
                 <div>
+                    Hi
                         <Router>
                         <div>
                            <Link to="/Register">Register</Link> || <Link to="/List">List players</Link> || <Link to="/ListGames">List games</Link> || 
